@@ -65,8 +65,8 @@ bot.on("callback_query", async (q) => {
   if (q.data === "reload") {
     const ok = await checkMembership(q.from.id);
     if (ok) {
-      bot.answerCallbackQuery(q.id, { text: "✅ Kamu sudah join semua, silakan kirim pesan." });
-      bot.sendMessage(q.from.id, "Sekarang kamu bisa kirim pesan ke bot.");
+      bot.answerCallbackQuery(q.id, { text: "✅ Kamu sudah join semua, silakan kirim pesan.Rules mengirim pesan bisa dilihat disini @RulesWTBWTA." });
+      bot.sendMessage(q.from.id, "Sekarang kamu bisa kirim pesan ke bot.Rules mengirim pesan bisa dilihat disini @RulesWTBWTA.");
     } else {
       bot.answerCallbackQuery(q.id, { text: "❌ Belum join semua!" });
     }
