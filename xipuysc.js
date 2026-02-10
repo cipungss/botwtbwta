@@ -5,6 +5,9 @@ const bot = new TelegramBot(config.TOKEN, { polling: true });
 const ADMINS = config.ADMINS;
 let users = new Set();
 let senders = [];
+let isShutdown = false;
+let shutdownMessage = "🚫 Bot sedang offline / maintenance.\nSilakan coba lagi nanti.";
+let shutdownTimer = null;
 
 // === CEK MEMBER DI SEMUA CHANNEL & GRUP ===
 async function checkMembership(userId) {
@@ -76,6 +79,10 @@ bot.on("callback_query", async (q) => {
 // === PESAN USER → KIRIM KE CHANNEL ===
 bot.on("message", async (msg) => {
   if (msg.chat.type !== "private") return; // cegah komentar grup
+  if (isShutdown && !ADMINS.includes(msg.from.id)) {
+    return bot.sendMessage(msg.chat.id, shutdownMessage);
+  }
+
   if (msg.text && msg.text.startsWith("/")) return; // skip command
 
   const chatId = msg.chat.id;
@@ -151,4 +158,40 @@ bot.onText(/\/bc (.+)/, (msg, match) => {
   users.forEach(u => {
     bot.sendMessage(u, `📢 Pesan dari Admin:\n\n${text}`);
   });
+});
+
+// === ADMIN: SHUTDOWN + TIMER ===
+bot.onText(/\/shutdown(?: (\d+))?(?: (.+))?/, (msg, match) => {
+  if (!ADMINS.includes(msg.from.id)) return;
+
+  const minutes = parseInt(match[1]);
+  const customMsg = match[2];
+
+  isShutdown = true;
+
+  if (customMsg) shutdownMessage = customMsg;
+
+  if (shutdownTimer) clearTimeout(shutdownTimer);
+
+  if (!isNaN(minutes)) {
+    shutdownTimer = setTimeout(() => {
+      isShutdown = false;
+      bot.sendMessage(msg.chat.id, "✅ Bot otomatis ONLINE kembali.");
+    }, minutes * 60 * 1000);
+
+    bot.sendMessage(msg.chat.id, `🛑 Bot OFF selama ${minutes} menit.`);
+  } else {
+    bot.sendMessage(msg.chat.id, "🛑 Bot OFF tanpa timer.");
+  }
+});
+
+// === ADMIN: ONLINE ===
+bot.onText(/\/online/, (msg) => {
+  if (!ADMINS.includes(msg.from.id)) return;
+
+  isShutdown = false;
+
+  if (shutdownTimer) clearTimeout(shutdownTimer);
+
+  bot.sendMessage(msg.chat.id, "✅ Bot sudah online kembali.");
 });
