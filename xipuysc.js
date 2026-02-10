@@ -56,7 +56,7 @@ bot.onText(/\/start/, (msg) => {
   const chatId = msg.chat.id;
   users.add(chatId);
   requireJoin(msg, () => {
-    bot.sendMessage(chatId, "✅ Selamat datang! Kirim pesan kamu dengan format #wtb untuk beli sesuatu #wta untuk menanyakan sesuatu.format di awal.");
+    bot.sendMessage(chatId, "✅ Selamat datang! Kirim pesan kamu dengan format #wtb untuk beli sesuatu #wta untuk menanyakan sesuatu.");
   });
 });
 
@@ -123,9 +123,9 @@ bot.on("message", async (msg) => {
         senders.push({ id: userId, name: msg.from.first_name, text: finalMsg });
 
         const link = `https://t.me/${config.CHANNELS[0].replace("@", "")}/${sent.message_id}`;
-        bot.sendMessage(chatId, "✅ Pesan berhasil dikirim!", {
+        bot.sendMessage(chatId, "✅ Pesan sudah dikirim!", {
           reply_markup: {
-            inline_keyboard: [[{ text: "🔗 Lihat di Channel", url: link }]]
+            inline_keyboard: [[{ text: "Klick untuk melihat pesan", url: link }]]
           }
         });
       } catch (e) {
