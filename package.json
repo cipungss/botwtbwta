@@ -1,0 +1,12 @@
+{
+  "name": "xipuysc-bot",
+  "version": "1.0.0",
+  "description": "Telegram bot auto post + cek join channel & grup",
+  "main": "xipuysc.js",
+  "scripts": {
+    "start": "node xipuysc.js"
+  },
+  "dependencies": {
+    "node-telegram-bot-api": "^0.66.0"
+  }
+}
